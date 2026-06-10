@@ -1,0 +1,487 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+.search__location--container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+.search__location {
+  padding: 12px 24px;
+  margin-top: 12px;
+  border-radius: 25px;
+  flex: 1;
+  max-width: 500px;
+  font-size: 19px;
+}
+
+.search__btn {
+  border: none;
+  outline: none;
+  padding: 12px 24px;
+  background: none;
+  cursor: pointer;
+  font-weight: 500;
+  border-radius: 25px;
+  transition: all 300ms ease;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  background-color: black;
+  margin-top: 7px;
+}
+
+
+.search__btn:hover {
+  background-color: grey;
+  transition: all 300ms ease;
+}
+
+.city__container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 20px;
+}
+
+.temperature {
+  font-size: 100px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.condition {
+  font-size: 30px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.status__container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding-top: 19px;
+  gap: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.daily {
+  padding-left: 21px;
+  font-size: 30px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.day {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.forecast__container {
+  display: flex;
+  align-items: center;
+  gap: 60px;
+  padding-left: 20px;
+  padding-top: 20px;
+  overflow: auto;
+}
+
+.hourly {
+  padding-top: 25px;
+  padding-left: 25px;
+  padding-bottom: 20px;
+  font-size: 30px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.updated {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.hourly-container {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+}
+
+.hourly-card {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  min-width: 75px;
+  background-color: black;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 24px;
+  scroll-snap-align: center;
+  width: 100%;
+  overflow: auto;
+  color: white;
+}
+
+.hourly-time {
+  font-size: 19px;
+  color: rgba(255, 255, 255, 0.7);
+  white-space: nowrap;
+}
+
+.hourly-icon {
+  width: 40px;
+  height: 40px;
+  margin: 8px 0;
+}
+
+.hourly-temp {
+  font-size: 29px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.hours__container {
+  display: flex;
+  gap: 200px;
+}
+
+.hours {
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  width: 100%;
+}
+
+.loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 50%);
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.not__found {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, 50%);
+  font-size: 50px;
+  font-weight: bold;
+}
+
+.suggestions__list--container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  background-color: lightgrey;
+  max-width: 500px;
+  margin: 0 auto;
+  border-radius: 30px;
+  flex-direction: column;
+  cursor: pointer;
+  width: 100%;
+  min-width: 100px;
+}
+
+.add__location {
+  border: none;
+  outline: none;
+  padding: 0 24px;
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 300ms ease;
+}
+
+.add__location:hover {
+  color: gray;
+  transition: all 300ms ease;
+}
+
+.city_and_state {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.suggested_city_and_state--container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 12px 24px;
+  transition: all 300ms ease;
+}
+
+.suggested_city_and_state--container:hover {
+  transition: all 300ms ease;
+  color: gray;
+}
+
+.dropdown-header {
+  text-align: center;
+}
+
+.suggestion-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 24px;
+}
+
+.saved_location {
+  cursor: pointer;
+  transition: all 300ms ease;
+}
+
+.saved_location:hover {
+  color: gray;
+  transition: all 300ms ease;
+}
+
+.remove_saved_location {
+  border: none;
+  outline: none;
+  padding: 0 24px;
+  background: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 300ms ease;
+}
+
+.remove_saved_location:hover {
+  transition: all 300ms ease;
+  color: gray;
+}
+
+.weather__condition {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.todays_date {
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  padding-bottom: 20px;
+}
+
+.hi_and_lo--container {
+  display: flex;
+  gap: 130px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.forecast__container {
+  cursor: pointer;
+}
+
+.forecast-details {
+  z-index: 1;
+  background-color: lightgrey;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 21px;
+  position: fixed;
+  top: 1%;
+  overflow-y:auto;
+  height:600px;
+}
+
+.advice__container{
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap:wrap;
+  max-width:500px;
+  gap:23px;
+  margin:0 auto;
+  margin-top:20px;
+  color:white;
+}
+
+
+.clothing{
+  font-size:19px;
+}
+
+.forecast_hi {
+  font-size: 50px;
+  font-weight: bold;
+  color: black;
+}
+
+.forecast_lo {
+  font-size: 50px;
+  font-weight: bold;
+  color: black;
+}
+
+.close_details {
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 25px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 300ms ease;
+}
+
+.close_details:hover {
+  background-color: gray;
+  transition: all 300ms ease;
+}
+
+.forecast_condition {
+  color: black;
+  font-size: 30px;
+}
+
+.forecast_wind_speed {
+  color: black;
+  font-size: 30px;
+}
+
+.forecast_barometer {
+  color: black;
+  font-size: 30px;
+}
+
+.forecast_humidity {
+  color: black;
+  font-size: 30px;
+}
+
+.button__container{
+  display:flex;
+  gap:30px;
+}
+
+.temp_convert {
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin-bottom: 13px;
+  transition: all 300ms ease;
+}
+
+.temp_convert:hover {
+  background-color: gray;
+  transition: all 300ms ease;
+}
+
+.barometer_convert {
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin-bottom: 13px;
+  transition: all 300ms ease;
+}
+
+.barometer_convert:hover {
+  background-color: gray;
+  transition: all 300ms ease;
+}
+
+.wind_speed_convert {
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin-bottom: 13px;
+  transition: all 300ms ease;
+}
+
+.wind_speed_convert:hover {
+  background-color: gray;
+  transition: all 300ms ease;
+}
+
+.miles_convert {
+  border: none;
+  outline: none;
+  background-color: black;
+  color: white;
+  padding: 12px 24px;
+  cursor: pointer;
+  border-radius: 25px;
+  margin-bottom: 13px;
+  transition: all 300ms ease;
+}
+
+.miles_convert:hover {
+  background-color: gray;
+  transition: all 300ms ease;
+}
+
+.bg-morning {
+  background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
+
+}
+
+.bg-afternoon {
+  background: linear-gradient(to bottom, #a1c4fd, #c2e9fb);
+
+}
+
+.bg-evening {
+  background: linear-gradient(to bottom, #f093fb, #f5576c);
+}
+
+.bg-night {
+  background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364);
+}
+
+.bg-rain {
+  background: linear-gradient(to bottom, #485563 0%, #29323c 100%)
+}
+
+.bg-thunderstorm {
+  background: linear-gradient(to bottom, #141e30 0%, #243b55 100%)
+}
+
+.bg-hurricane {
+  background: linear-gradient(135deg, #24243e 0%, #302b63 50%, #0f0c29 100%);
+}
+
+.bg-haze {
+  background: linear-gradient(to bottom, #d1d8e0 0%, #a5b1c2 50%, #95a5a6 100%);
+}
+
+.bg-clouds {
+  background: linear-gradient(to bottom, #bdc3c7 0%, #2c3e50 100%);
+}
+
+.bg-snow {
+  background: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 50%, #9bc5c3 100%);
+}
+
+.bg-mist {
+  background: linear-gradient(to bottom, #dbe6f6 0%, #c5d9ea 100%);
+}
