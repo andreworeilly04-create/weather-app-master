@@ -5,7 +5,6 @@ import { SavedLocation } from '@/types/weather'
 import { getClothingAdvice } from '../utils/weatherAdvice'
 import './globals.css'
 
-// Define interface for Geocoding API results
 interface GeoSuggestion {
   name: string;
   state?: string;
@@ -26,7 +25,7 @@ export default function Home() {
   const [isSpeed, setIsSpeed] = useState<boolean>(false);
   const [isPressure, setIsPressure] = useState<boolean>(false);
   const [suggestionsList, setSuggestionsList] = useState<GeoSuggestion[]>([]);
-  const [timeCategory, setTimeCategory] = useState('afternoon');
+  const [timeCategory, setTimeCategory] = useState('');
   const [hourlyData, setHourlyData] = useState<any[]>([])
   const [weatherCondition, setWeatherCondition] = useState('clear');
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -42,23 +41,35 @@ export default function Home() {
     localStorage.setItem("mySavedLocations", JSON.stringify(savedLocations));
   }, [savedLocations]);
 
+  // FIX: Accurate dynamic timezone calculation using absolute UTC math to bypass missing keys
   useEffect(() => {
-    if (!weather?.city?.timezone || !weather?.sys?.sunset) return;
-    const now = new Date();
-    const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-    const localNow = new Date(utc + (weather.city.timezone * 1000));
-    const sunsetTime = new Date(weather.sys.sunset * 1000);
-    const sunriseTime = new Date(weather.sys.sunrise * 1000);
+    const updateTimeCategory = () => {
+      // Safety check (Ensure weather data and city timezone exist)
+      if (!weather?.city?.sunrise || !weather?.city?.sunset || !weather?.city?.timezone === undefined) return;
 
-    if (localNow < sunriseTime) {
-      setTimeCategory('night');
-    } else if (localNow < sunsetTime) {
-      setTimeCategory(localNow.getHours() < 12 ? 'morning' : 'afternoon');
-    } else if (localNow.getHours() >= 21) {
-      setTimeCategory('night');
-    } else {
-      setTimeCategory('evening');
-    }
+      const { sunrise, sunset, timezone } = weather.city;
+
+      // 1. Get the current exact UTC time in seconds
+      const nowutc = Math.floor(Date.now() / 1000);
+
+      const localSolarTime = nowutc + timezone;
+
+      // 2. Compare pure UTC timestamps
+      if (localSolarTime >= sunrise && localSolarTime < sunrise) {
+        setTimeCategory('morning');
+      } else if (localSolarTime >= sunset && localSolarTime < sunset) {
+        setTimeCategory('evening');
+      } else if (localSolarTime < sunrise || localSolarTime >= sunset) {
+        setTimeCategory('night');
+      } else {
+        setTimeCategory('afternoon');
+      }
+    };
+
+    updateTimeCategory();
+    const interval = setInterval(updateTimeCategory, 60000);
+
+    return () => clearInterval(interval);
   }, [weather]);
 
   useEffect(() => {
@@ -72,7 +83,6 @@ export default function Home() {
   const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY;
   const unit = fahrenheit ? 'F' : 'C';
 
-  // 1. Fetch weather directly by Coordinates
   const fetchWeatherByCoords = async (lat: number, lon: number, customState?: string) => {
     setLoading(true);
     try {
@@ -83,16 +93,15 @@ export default function Home() {
 
       if (data && data.list) {
         setWeather({ ...data, customState: customState || "" });
-        setHourlyData(data.list); // Extracted directly from primary dataset response
+        setHourlyData(data.list);
       }
     } catch (error) {
-      console.error("Error fetching weather by coordinates", error);
+      console.error("Error fetching weather by coordinates:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   };
 
-  // 2. Fallback text search if user hits enter without selecting a suggestion
   const handleSearch = async (input: string | SavedLocation) => {
     if (typeof input === 'string' && input.trim().length === 0) {
       alert("Please enter a location");
@@ -126,7 +135,6 @@ export default function Home() {
     }
   };
 
-  // 3. Initial load: Get user's current location weather
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -143,7 +151,6 @@ export default function Home() {
     }
   }, []);
 
-  // 4. Dynamic API Autocomplete with a built-in debounce to save API calls
   useEffect(() => {
     if (query.trim().length < 3) {
       setSuggestionsList([]);
@@ -162,11 +169,10 @@ export default function Home() {
       } catch (err) {
         console.error("Error fetching autocomplete suggestions:", err);
       }
-    }, 400); // Waits 400ms after user stops typing to fire API request
+    }, 400);
 
     return () => clearTimeout(delayDebounceFn);
   }, [query, API_KEY]);
-
 
   const handleKeyDown = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (!isOpen || suggestionsList.length === 0) return;
@@ -204,7 +210,6 @@ export default function Home() {
     setQuery("");
     isOpen && setIsOpen(false);
 
-    // Fetch directly using the specific lat/lon from the clicked suggestion
     fetchWeatherByCoords(location.lat, location.lon, location.state || location.country);
   };
 
@@ -212,8 +217,6 @@ export default function Home() {
   if (!weather || !weather.list || weather.list.length === 0) return <div className="not__found">City not found.</div>;
 
   const current = weather.list[0];
-
-  // FIXED: Replaced calendar strict day filter with a rolling 24-hour cycle window to prevent shrinking lists at night
   const currentTimestamp = Math.floor(Date.now() / 1000);
   const twentyFourHoursFromNow = currentTimestamp + 86400;
 
@@ -222,14 +225,9 @@ export default function Home() {
   });
 
   const datasetForHighLow = next24HoursForecasts.length > 0 ? next24HoursForecasts : weather.list.slice(0, 8);
-
   const temps = datasetForHighLow.map(item => item.main.temp);
   const trueHigh = Math.max(...temps);
   const trueLow = Math.min(...temps);
-
-  if (weather.list.length === 0) {
-    return <h2 className="no_forecasts">No forecast data available for today</h2>
-  }
 
   const temp = current.main.temp;
   const humidity = current.main.humidity;
@@ -237,6 +235,7 @@ export default function Home() {
   const wind = current.wind.speed;
   const visibility = current.visibility;
   const pressure = current.main.pressure;
+
   const currentUtcTimestamp = Math.floor(Date.now() / 1000);
   const cityLocalTimestamp = (currentUtcTimestamp + weather.city.timezone) * 1000;
   const localDate = new Date(cityLocalTimestamp);
@@ -247,6 +246,7 @@ export default function Home() {
     hour12: true,
     timeZone: 'UTC',
   });
+
   const todaysDate = localDate.toLocaleTimeString('en-US', {
     weekday: 'long',
     month: 'long',
@@ -268,7 +268,6 @@ export default function Home() {
   } else if (temp > 85) {
     temperatureClass = 'weather-hot'
   }
-
 
   const removeLocation = (locationToRemove: SavedLocation) => {
     setSavedLocations((prev) =>
@@ -298,44 +297,43 @@ export default function Home() {
         conditions: [],
         windSpeeds: [],
         descriptions: [],
+        mainConditions: [],
         pressures: [],
         humidities: [],
         visibility: [],
-        advice: [],
       };
     }
 
-    const temp = item.main.temp;
-    const cond = item.weather[0].main
-
-    const tempCelcius = (temp - 32) * 5 / 9;
-
-    const adviceResult = getClothingAdvice(tempCelcius, cond)
-
-    acc[date].temps.push(temp)
     acc[date].temps.push(item.main.temp);
     acc[date].conditions.push(item.weather[0].icon)
     acc[date].windSpeeds.push(item.wind.speed);
     acc[date].descriptions.push(item.weather[0].description);
+    acc[date].mainConditions.push(item.weather[0].main);
     acc[date].pressures.push(item.main.pressure);
     acc[date].humidities.push(item.main.humidity);
     acc[date].visibility.push(item.visibility);
-    acc[date].advice.push(adviceResult);
 
     return acc;
-  }, {} as Record<string, { temps: number[], conditions: string[], windSpeeds: number[], descriptions: string[], pressures: number[], humidities: number[], visibility: number[] }>)
+  }, {} as Record<string, { temps: number[], conditions: string[], windSpeeds: number[], descriptions: string[], mainConditions: string[], pressures: number[], humidities: number[], visibility: number[] }>)
 
   const forecastDates = Object.keys(dailyForecast).sort();
   const upcomingDates = forecastDates.slice(1);
 
   const currentTemp = weather?.list?.[0]?.main.temp ?? 0;
-  const tempCelcius =  (currentTemp - 32) * 5 / 9;
-
-  const displayTemp = fahrenheit ? currentTemp : tempCelcius;
-
+  const tempCelcius = (currentTemp - 32) * 5 / 9;
   const currentCondition = weather?.list?.[0]?.weather?.[0]?.main ?? "Clear";
   const advice = getClothingAdvice(tempCelcius, currentCondition);
 
+  const getDetailedDayAdvice = (dateString: string) => {
+    const dayData = dailyForecast[dateString];
+    if (!dayData) return { suggestion: "", items: [], activity: "" };
+
+    const dayHighFahrenheit = Math.max(...dayData.temps);
+    const dayHighCelsius = ((dayHighFahrenheit - 32) * 5) / 9;
+    const primaryCondition = dayData.mainConditions[0] || "Clear";
+
+    return getClothingAdvice(dayHighCelsius, primaryCondition);
+  };
 
   return (
     <>
@@ -358,7 +356,6 @@ export default function Home() {
           />
           <button onClick={() => handleSearch(query)} className="search__btn">Search Location</button>
         </div>
-
 
         {isOpen && ((query === "" && savedLocations.length > 0) || (query !== "" && suggestionsList.length > 0)) && (
           <div className="suggestions__list--container">
@@ -429,21 +426,18 @@ export default function Home() {
           <h3 className="barometer">Barometer: {isPressure ? (pressure * 0.02953).toFixed(2) + ' inHg' : Math.round(pressure) + " hPa"}</h3>
           <h3 className="humidity">Humidity: {Math.round(humidity)}%</h3>
         </div>
-          
+
         <div className="advice__container">
-          <h2 className="recommendation">Recommendations:</h2>
           <h2 className="suggestion">{advice.suggestion}</h2>
           <ul className="advice">
-             <h2 className="what_to_wear">What To Wear:</h2>
-
+            <h2 className="what_to_wear">What To Wear:</h2>
             {advice.items.map((item, index) => (
-             <li className="clothing" key={index}>{item}</li>
+              <li className="clothing" key={index}>{item}</li>
             ))}
           </ul>
           <h2 className="activity"><strong>Activity: </strong>{advice.activity}</h2>
         </div>
 
-        {/* --- Daily Forecast Container --- */}
         <div className="daily__container">
           <h2 className="daily">Daily</h2>
           <div className="forecast__container">
@@ -467,19 +461,27 @@ export default function Home() {
             <p className="forecast_humidity">Visibility: {isMiles ? (dailyForecast[selectedDate].visibility[0] * 1.60934).toFixed(1) + " km" : dailyForecast[selectedDate].visibility[0] + " mi"}</p>
             <p className="forecast_hi">Hi: {fahrenheit ? Math.round(Math.max(...dailyForecast[selectedDate].temps)) : Math.round((Math.max(...dailyForecast[selectedDate].temps) - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</p>
             <p className="forecast_lo">Lo: {fahrenheit ? Math.round(Math.min(...dailyForecast[selectedDate].temps)) : Math.round((Math.min(...dailyForecast[selectedDate].temps) - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</p>
+
             <div className="forecast__advice__container">
-              <h2 className="forecast__recommendation">Recommendations</h2>
-              <p>{dailyForecast[selectedDate].advice[0].suggestion}</p>
-              <ul className="forecast__advice">
-                {dailyForecast[selectedDate].advice[0].items.map((item: string, index: number) => (
-                  <li key={index}>{item}</li>
-                ))}
-              </ul>
-            <button className="close_details" onClick={() => setSelectedDate(null)}>Close details</button>
+              {(() => {
+                const dayAdvice = getDetailedDayAdvice(selectedDate);
+                return (
+                  <>
+                    <p className="forecast__suggestion">{dayAdvice.suggestion}</p>
+                    <ul className="forecast__advice">
+                      <h2 className="forecast_what_to_wear">What To Wear:</h2>
+                      {dayAdvice.items.map((item: string, index: number) => (
+                        <li key={index}>{item}</li>
+                      ))}
+                    </ul>
+                  </>
+                );
+              })()}
+              <button className="close_details" onClick={() => setSelectedDate(null)}>Close details</button>
+            </div>
           </div>
-          </div>
-                )}
-        {/* --- Hourly Forecast Container --- */}
+        )}
+
         <h2 className="hourly">Hourly</h2>
         <div className="hourly-container">
           <div className="hourly-card">

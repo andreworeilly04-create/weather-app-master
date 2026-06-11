@@ -4,10 +4,10 @@ type WeatherAdvice = {
     activity: string;
 };
 
-export const getClothingAdvice = (tempCelcius: number, condition: string,): WeatherAdvice => {
+export const getClothingAdvice = (tempCelcius: number, condition: string): WeatherAdvice => {
     if (condition === "Tornado" || condition === "Hurricane") {
         return {
-            suggestion: "TORNADO WARNING: Take immediate shelter in a basement or interior room.",
+            suggestion: "SEVERE WEATHER WARNING!: Take immediate shelter in a basement or interior room.",
             items: ["Emergency kit", "Sturdy shoes"],
             activity: "Stay indoors/Shelter"
         }
@@ -27,6 +27,14 @@ export const getClothingAdvice = (tempCelcius: number, condition: string,): Weat
             suggestion: "It's wet outside",
             items: ["Waterproof jacket", "Umbrella"],
             activity: "Indoor"
+        }
+    }
+
+    if (tempCelcius < -5){
+        return {
+            suggestion:"DANGEROUS FREEZE WARNING!",
+            items:["Heavy parka", "Thermal layers", "Gloves", "Hat", "Scarf"],
+            activity:"Stay indoors; avoid travel"
         }
     }
 
@@ -52,6 +60,14 @@ export const getClothingAdvice = (tempCelcius: number, condition: string,): Weat
             items: ["T-shirt", "Light pants or jeans"],
             activity: "Casual outdoor walk"
         };
+    }
+
+    if (tempCelcius > 36){
+        return {
+            suggestion: "DANGEROUS HEAT WARNING!",
+            items:["Water", "Sunscreen", "Hat", "Cool clothing"],
+            activity:"Stay indoors in AC"
+        }
     }
 
     return {

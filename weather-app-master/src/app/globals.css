@@ -297,25 +297,49 @@
   gap: 21px;
   position: fixed;
   top: 1%;
-  overflow-y:auto;
-  height:600px;
+  overflow-y: auto;
+  height: 600px;
 }
 
-.advice__container{
-  display:flex;
+.advice__container {
+  display: flex;
   justify-content: center;
   align-items: center;
-  flex-wrap:wrap;
-  max-width:500px;
-  gap:23px;
-  margin:0 auto;
-  margin-top:20px;
-  color:white;
+  max-width: 500px;
+  gap: 23px;
+  margin: 0 auto;
+  margin-top: 20px;
+  color: white;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  flex-direction: column;
 }
 
+.advice{
+  display: flex;
+  flex-direction:column;
+  gap:20px;
+}
 
-.clothing{
-  font-size:19px;
+.forecast__advice__container{
+  display: flex;
+  flex-direction:column;
+  align-items: center;
+  font-size:20px;
+  gap:27px;
+}
+
+.forecast__advice{
+  display: flex;
+  flex-direction:column;
+  gap:15px;
+}
+
+.forecast__suggestion{
+  font-size:30px;
+}
+
+.clothing {
+  font-size: 19px;
 }
 
 .forecast_hi {
@@ -367,9 +391,13 @@
   font-size: 30px;
 }
 
-.button__container{
-  display:flex;
-  gap:30px;
+.forecast_what_to_wear{
+  font-size:30px;
+}
+
+.button__container {
+  display: flex;
+  gap: 30px;
 }
 
 .temp_convert {

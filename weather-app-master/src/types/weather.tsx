@@ -4,6 +4,8 @@ export interface WeatherData {
         timezone: number;
         displayName?: string;
         customState?: string;
+        sunrise: number;
+        sunset: number;
     };
 
     list: {
@@ -27,10 +29,6 @@ export interface WeatherData {
         visibility: number;
     }[];
     
-    sys: {
-        sunrise: number;
-        sunset: number;
-    }
 }
 
 export interface SavedLocation {
