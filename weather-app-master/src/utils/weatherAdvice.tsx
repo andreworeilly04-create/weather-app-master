@@ -30,6 +30,22 @@ export const getClothingAdvice = (tempCelcius: number, condition: string): Weath
         }
     }
 
+    if (condition === "Snow"){
+        return {
+            suggestion:"It's Snowy",
+            items:["Heavy Parky", "Thermal layers", "gloves", "A hat", "A scarf", "And waterproof boots"],
+            activity:"Building a snowman, Sledding, making snow angels, having a snowball fight, or building a snow fort"
+        }
+    }
+
+    if (condition === "Haze"){
+        return {
+            suggestion:"Hazy Weather",
+            items:["Air quality mask", "Breathable clothing", "Water"],
+            activity:"Stay indoors, Indoor hobbies, Light indoor exercise"
+        }
+    }
+
     if (tempCelcius < -5){
         return {
             suggestion:"DANGEROUS FREEZE WARNING!",

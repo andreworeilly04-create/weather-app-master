@@ -1,7 +1,6 @@
 'use client'
 import { useState, useEffect, useRef, KeyboardEvent } from 'react'
-import { WeatherData } from '@/types/weather';
-import { SavedLocation } from '@/types/weather'
+import { WeatherData, SavedLocation } from '@/types/weather';
 import { getClothingAdvice } from '../utils/weatherAdvice'
 import './globals.css'
 
@@ -41,40 +40,38 @@ export default function Home() {
     localStorage.setItem("mySavedLocations", JSON.stringify(savedLocations));
   }, [savedLocations]);
 
-  // FIX: Accurate dynamic timezone calculation using absolute UTC math to bypass missing keys
+  // Accurate dynamic timezone calculation using absolute UTC math
   useEffect(() => {
     const updateTimeCategory = () => {
-      // Safety check (Ensure weather data and city timezone exist)
-      if (!weather?.city?.sunrise || !weather?.city?.sunset || !weather?.city?.timezone === undefined) return;
+      if (!weather?.city?.sunrise || !weather?.city?.sunset || weather.city.timezone === undefined) return;
 
       const { sunrise, sunset, timezone } = weather.city;
-
-      // 1. Get the current exact UTC time in seconds
       const nowutc = Math.floor(Date.now() / 1000);
+      const localSolarTime = (nowutc + timezone);
+      const localSunrise = sunrise + timezone;
+      const localSunset = sunset + timezone;
+      const dayLength = localSunset - localSunrise;
+      const solarNoon = localSunrise + (dayLength / 2);
+      const afternoonBuffer = dayLength * 0.20;
 
-      const localSolarTime = nowutc + timezone;
-
-      // 2. Compare pure UTC timestamps
-      if (localSolarTime >= sunrise && localSolarTime < sunrise) {
-        setTimeCategory('morning');
-      } else if (localSolarTime >= sunset && localSolarTime < sunset) {
-        setTimeCategory('evening');
-      } else if (localSolarTime < sunrise || localSolarTime >= sunset) {
+      if (localSolarTime < localSunrise || localSolarTime > localSunset) {
         setTimeCategory('night');
+      } else if (localSolarTime < solarNoon - afternoonBuffer) {
+        setTimeCategory('morning');
+      } else if (localSolarTime > solarNoon + afternoonBuffer) {
+        setTimeCategory('evening');
       } else {
         setTimeCategory('afternoon');
       }
-    };
+    }
 
     updateTimeCategory();
     const interval = setInterval(updateTimeCategory, 60000);
-
     return () => clearInterval(interval);
   }, [weather]);
 
   useEffect(() => {
     if (!weather?.list || weather.list.length === 0 || !weather.list[0].weather || weather.list[0].weather.length === 0) return;
-
     const condition = weather.list[0].weather[0].main.toLowerCase();
     setWeatherCondition(condition)
   }, [weather])
@@ -189,7 +186,6 @@ export default function Home() {
         selectSuggestion(suggestionsList[activeIndex]);
       } else {
         if (query.trim() === "") return;
-
         try {
           await handleSearch(query);
           setQuery("");
@@ -301,6 +297,7 @@ export default function Home() {
         pressures: [],
         humidities: [],
         visibility: [],
+        pops: [] // Track probability of precipitation array
       };
     }
 
@@ -312,9 +309,10 @@ export default function Home() {
     acc[date].pressures.push(item.main.pressure);
     acc[date].humidities.push(item.main.humidity);
     acc[date].visibility.push(item.visibility);
+    acc[date].pops.push(item.pop ?? 0); // OpenWeather maps 'pop' from 0 to 1
 
     return acc;
-  }, {} as Record<string, { temps: number[], conditions: string[], windSpeeds: number[], descriptions: string[], mainConditions: string[], pressures: number[], humidities: number[], visibility: number[] }>)
+  }, {} as Record<string, { temps: number[], conditions: string[], windSpeeds: number[], descriptions: string[], mainConditions: string[], pressures: number[], humidities: number[], visibility: number[], pops: number[] }>)
 
   const forecastDates = Object.keys(dailyForecast).sort();
   const upcomingDates = forecastDates.slice(1);
@@ -335,9 +333,34 @@ export default function Home() {
     return getClothingAdvice(dayHighCelsius, primaryCondition);
   };
 
+  const getIconUrl = (apiIcon: string) => {
+    if (timeCategory === 'night' && apiIcon.endsWith('d')) {
+      return apiIcon.replace('d', 'n');
+    }
+    return apiIcon;
+  }
+
+  const enrichForecast = (data: any) => {
+    const enriched = { ...data };
+    Object.keys(enriched).forEach((date) => {
+      const mainCondition = enriched[date].mainConditions[0]?.toLowerCase() || '';
+      
+      enriched[date].isRainy = ['rain', 'thunderstorm', 'drizzle', 'snow'].some(condition => 
+        mainCondition.includes(condition)
+      );
+      
+      // Calculate max probability of precipitation across the 3-hour interval slices
+      const maxPop = Math.max(...enriched[date].pops);
+      enriched[date].popPercentage = Math.round(maxPop * 100);
+    });
+    return enriched;
+  };
+
+  const enrichedForecast = enrichForecast(dailyForecast);
+
   return (
     <>
-      <div className={`app-container bg-${timeCategory} bg-${weatherCondition.toLowerCase()}`}>
+      <div className={`app-container bg-${timeCategory} bg-${weatherCondition}`}>
         <div ref={wrapperRef} className="search__location--container">
           <input
             value={query}
@@ -414,7 +437,9 @@ export default function Home() {
           <div className="hi_and_lo--container">
             <h2 className="hi">Hi: {Math.round(fahrenheit ? trueHigh : (trueHigh - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"} </h2> <h2 className="lo">Lo: {Math.round(fahrenheit ? trueLow : (trueLow - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</h2>
           </div>
-          <img src={`https://openweathermap.org/img/wn/${weather.list[0].weather[0].icon}@2x.png`} alt={weather.list[0].weather[0].description} />
+          <div className="weather_icon--container">
+          <img className="weather_icon" src={`https://openweathermap.org/img/wn/${getIconUrl(weather.list[0].weather[0].icon)}@2x.png`} alt={weather.list[0].weather[0].description} />
+          </div>
           <p className="condition">{weather.list[0].weather[0].description}</p>
           <p className="updated">Updated as of {formattedTime}</p>
         </div>
@@ -430,9 +455,9 @@ export default function Home() {
         <div className="advice__container">
           <h2 className="suggestion">{advice.suggestion}</h2>
           <ul className="advice">
-            <h2 className="what_to_wear">What To Wear:</h2>
+            <h2 className="what_to_wear">What you will need:</h2>
             {advice.items.map((item, index) => (
-              <li className="clothing" key={index}>{item}</li>
+              <li className="items" key={index}>{item}</li>
             ))}
           </ul>
           <h2 className="activity"><strong>Activity: </strong>{advice.activity}</h2>
@@ -441,13 +466,23 @@ export default function Home() {
         <div className="daily__container">
           <h2 className="daily">Daily</h2>
           <div className="forecast__container">
-            {upcomingDates.map((date) => (
-              <div className="forecast" key={date} onClick={() => setSelectedDate(date)}>
-                <p className="day">{new Date(date).toLocaleDateString('en-US', { weekday: 'long' })}</p>
-                <img src={`https://openweathermap.org/img/wn/${dailyForecast[date].conditions[0]}@2x.png`} alt={weather.list[0].weather[0].description} />
-                <p className="temperature">{fahrenheit ? Math.round(Math.max(...dailyForecast[date].temps)) : Math.round((Math.max(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit} {fahrenheit ? Math.round(Math.min(...dailyForecast[date].temps)) : Math.round((Math.min(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit}</p>
-              </div>
-            ))}
+            {upcomingDates.map((date) => {
+              const { isRainy, popPercentage } = enrichedForecast[date];
+              return (
+                <div className="forecast" key={date} onClick={() => setSelectedDate(date)}>
+                  <p className="day">{new Date(date).toLocaleDateString('en-US', { weekday: 'long' })}</p>
+                  {isRainy && popPercentage > 0 && (
+                    <div className="weather-card__precipitation">
+                      <span className="precipitation__value">{popPercentage}%</span>
+                    </div>
+                  )}
+                  <div className="weather_icon--container">
+                  <img className="weather_icon" src={`https://openweathermap.org/img/wn/${dailyForecast[date].conditions[0]}@2x.png`} alt={weather.list[0].weather[0].description} />
+                  </div>
+                  <p className="temperature">{fahrenheit ? Math.round(Math.max(...dailyForecast[date].temps)) : Math.round((Math.max(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit} {fahrenheit ? Math.round(Math.min(...dailyForecast[date].temps)) : Math.round((Math.min(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
 
@@ -469,9 +504,9 @@ export default function Home() {
                   <>
                     <p className="forecast__suggestion">{dayAdvice.suggestion}</p>
                     <ul className="forecast__advice">
-                      <h2 className="forecast_what_to_wear">What To Wear:</h2>
+                      <h2 className="forecast_what_to_wear">What you will need:</h2>
                       {dayAdvice.items.map((item: string, index: number) => (
-                        <li key={index}>{item}</li>
+                        <li className="items" key={index}>{item}</li>
                       ))}
                     </ul>
                   </>
@@ -486,13 +521,31 @@ export default function Home() {
         <div className="hourly-container">
           <div className="hourly-card">
             <div className="hours__container">
-              {hourlyData && hourlyData.length > 0 ? (hourlyData.slice(0, 8).map((hour, index) => (
-                <div className="hours" key={index}>
-                  <img src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt={hour.weather[0].description} />
-                  <span className="hourly-time">{new Date(hour.dt * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
-                  <span className="hourly-temp">{Math.round(fahrenheit ? hour.main.temp : (hour.main.temp - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</span>
-                </div>
-              ))
+              {hourlyData && hourlyData.length > 0 ? (
+                hourlyData.slice(0, 8).map((hour, index) => {
+                  const localCityTimestamp = (hour.dt + weather.city.timezone) * 1000;
+                  const cityDate = new Date(localCityTimestamp);
+                  const hourlyFormattedTime = cityDate.toLocaleTimeString('en-US', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: 'UTC',
+
+                  });
+                  const isRainy = ['rain', 'thunderstorm', 'drizzle'].some(condition => hour.weather[0]?.main?.toLowerCase().includes(condition))
+                  const popPercentage = Math.round((hour.pop || 0) * 100);
+                  return (
+                    <div className="hours" key={index}>
+                      <img src={`https://openweathermap.org/img/wn/${hour.weather[0].icon}@2x.png`} alt={hour.weather[0].description} />
+                      <span className="hourly-time">{hourlyFormattedTime}</span>
+                      <span className="hourly-temp">{Math.round(fahrenheit ? hour.main.temp : (hour.main.temp - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</span>
+                      {isRainy && popPercentage > 0 && (
+                        <div className="weather-card_precipitation">
+                          <span className="precipitation_value">{popPercentage}%</span>
+                          </div>
+                      )}
+                    </div>
+                  );
+                })
               ) : (
                 <p className="loading_hourly_forecast">Loading hourly data...</p>
               )}

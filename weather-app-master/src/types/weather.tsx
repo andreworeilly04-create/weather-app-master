@@ -17,16 +17,21 @@ export interface WeatherData {
             humidity: number;
             feels_like: number;
             pressure: number;
+           
         }
          weather: {
             main:string;
             description: string;
             icon: string;
         }[];
+
+        pop:number;
+        
         wind: {
             speed: number;
         };  
         visibility: number;
+        
     }[];
     
 }

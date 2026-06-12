@@ -52,13 +52,13 @@
 .temperature {
   font-size: 100px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .condition {
   font-size: 30px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .status__container {
@@ -70,19 +70,20 @@
   max-width: 600px;
   margin: 0 auto;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .daily {
   padding-left: 21px;
   font-size: 30px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .day {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+  padding-bottom:20px;
 }
 
 .forecast__container {
@@ -100,12 +101,12 @@
   padding-bottom: 20px;
   font-size: 30px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .updated {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .hourly-container {
@@ -213,7 +214,7 @@
 
 .city_and_state {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .suggested_city_and_state--container {
@@ -266,12 +267,12 @@
 
 .weather__condition {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .todays_date {
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
   padding-bottom: 20px;
 }
 
@@ -279,7 +280,7 @@
   display: flex;
   gap: 130px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
 .forecast__container {
@@ -310,32 +311,32 @@
   margin: 0 auto;
   margin-top: 20px;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
   flex-direction: column;
 }
 
-.advice{
+.advice {
   display: flex;
-  flex-direction:column;
-  gap:20px;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.forecast__advice__container{
+.forecast__advice__container {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   align-items: center;
-  font-size:20px;
-  gap:27px;
+  font-size: 20px;
+  gap: 27px;
 }
 
-.forecast__advice{
+.forecast__advice {
   display: flex;
-  flex-direction:column;
-  gap:15px;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.forecast__suggestion{
-  font-size:30px;
+.forecast__suggestion {
+  font-size: 30px;
 }
 
 .clothing {
@@ -391,8 +392,8 @@
   font-size: 30px;
 }
 
-.forecast_what_to_wear{
-  font-size:30px;
+.forecast_what_to_wear {
+  font-size: 30px;
 }
 
 .button__container {
@@ -468,6 +469,27 @@
   transition: all 300ms ease;
 }
 
+.precipitation__value {
+  color: white;
+  font-size: 24px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+  position: absolute;
+  z-index:1;
+}
+
+.weather_icon--container {
+  background:rgba(255, 255, 255, 0.15);
+  backdrop-filter:blur(4px);
+  padding:10px;
+  border-radius:50%;
+  display:inline-block;
+}
+ .items{
+  font-weight:bold;
+  font-size:20px;
+ }
+
+
 .bg-morning {
   background: linear-gradient(to bottom, #ff9a9e, #fad0c4);
 
@@ -507,7 +529,7 @@
 }
 
 .bg-snow {
-  background: linear-gradient(to bottom, #e6e9f0 0%, #eef1f5 50%, #9bc5c3 100%);
+  background: linear-gradient(to bottom, #90a4ae 0%, #78909c 50%, #546e7a 100%);
 }
 
 .bg-mist {
