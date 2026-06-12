@@ -12,6 +12,21 @@
   gap: 6px;
 }
 
+.pressure_and_speed {
+  display: flex;
+  gap: 19px;
+}
+
+.miles_and_temp {
+  display: flex;
+  gap: 19px;
+}
+
+.button__container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .search__location {
   padding: 12px 24px;
   margin-top: 12px;
@@ -55,6 +70,17 @@
   text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
 }
 
+.activity{
+  padding-bottom:20px;
+  padding-left:12px;
+}
+
+.daily_temperature {
+  font-size: 100px;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+}
+
 .condition {
   font-size: 30px;
   color: white;
@@ -83,7 +109,7 @@
 .day {
   color: white;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
-  padding-bottom:20px;
+  padding-bottom: 20px;
 }
 
 .forecast__container {
@@ -285,6 +311,7 @@
 
 .forecast__container {
   cursor: pointer;
+  position: relative;
 }
 
 .forecast-details {
@@ -392,6 +419,10 @@
   font-size: 30px;
 }
 
+.forecast_visibility{
+    font-size:30px;
+  }
+
 .forecast_what_to_wear {
   font-size: 30px;
 }
@@ -469,25 +500,28 @@
   transition: all 300ms ease;
 }
 
+
+
 .precipitation__value {
   color: white;
   font-size: 24px;
   text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
   position: absolute;
-  z-index:1;
+  z-index: 1;
 }
 
 .weather_icon--container {
-  background:rgba(255, 255, 255, 0.15);
-  backdrop-filter:blur(4px);
-  padding:10px;
-  border-radius:50%;
-  display:inline-block;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(4px);
+  padding: 10px;
+  border-radius: 50%;
+  display: inline-block;
 }
- .items{
-  font-weight:bold;
-  font-size:20px;
- }
+
+.items {
+  font-weight: bold;
+  font-size: 20px;
+}
 
 
 .bg-morning {
@@ -534,4 +568,152 @@
 
 .bg-mist {
   background: linear-gradient(to bottom, #dbe6f6 0%, #c5d9ea 100%);
+}
+
+@media(max-width:421px) {
+  .search__location--container {
+    flex-direction: column-reverse;
+  }
+
+  .search__btn{
+    font-size:11px;
+  }
+
+  .search__location{
+    font-size:15px;
+  }
+
+  .barometer_convert{
+    font-size:11px;
+  }
+
+  .wind_speed_convert{
+    font-size:11px;
+  }
+
+  .miles_convert{
+    font-size:11px;
+  }
+
+  .temp_convert{
+    font-size:11px;
+  }
+
+
+  .todays_date {
+    font-size: 21px;
+  }
+
+  .city_and_state {
+    font-size: 30px;
+  }
+
+  .temperature {
+    font-size: 86px;
+  }
+
+  .condition {
+    font-size: 27px;
+  }
+
+  .status__container {
+    font-size: 13px;
+  }
+
+  .suggestion {
+    font-size: 20px;
+  }
+
+  .what_to_wear {
+    font-size: 19px;
+  }
+
+  .activity {
+    font-size: 20px;
+  }
+
+  .daily {
+    font-size: 24px;
+  }
+
+  .forecast_hi{
+    font-size:40px;
+  }
+
+  .forecast_lo{
+    font-size:40px;
+  }
+
+  .forecast_condition{
+    font-size:23px;
+  }
+
+  .forecast_wind_speed{
+    font-size:25px;
+  }
+
+  .forecast_barometer{
+    font-size:25px;
+  }
+
+  .forecast_humidity{
+    font-size:25px;
+  }
+
+  .forecast_visibility{
+    font-size:25px;
+  }
+
+  .forecast__suggestion{
+    font-size:22px;
+  }
+
+  .forecast_what_to_wear{
+    font-size:22px;
+  }
+
+  .forecast_items{
+    font-size:19px;
+  }
+
+  .weather_icon--container {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(4px);
+    padding: 3px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .daily_temperature {
+    font-size: 50px;
+    color: white;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 1);
+  }
+
+  .button__container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hourly {
+    font-size: 24px;
+  }
+}
+
+@media(max-width:340px){
+   .todays_date {
+    font-size: 19px;
+  }
+
+  .temperature{
+    font-size:73px;
+  }
+
+  .hi{
+    font-size:21px;
+  }
+
+  .lo{
+    font-size:21px;
+  }
 }

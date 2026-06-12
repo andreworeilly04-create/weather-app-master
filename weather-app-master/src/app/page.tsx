@@ -426,10 +426,14 @@ export default function Home() {
 
         <div className={`city__container ${temperatureClass}`}>
           <div className="button__container">
+          <div className="pressure_and_speed">
             <button onClick={() => setIsPressure(!isPressure)} className="barometer_convert">{isPressure ? 'inHg' : 'hPa'}</button>
             <button onClick={() => setIsSpeed(!isSpeed)} className="wind_speed_convert">{isSpeed ? 'km/h' : 'mph'}</button>
+            </div>
+            <div className="miles_and_temp">
             <button onClick={() => setIsMiles(!isMiles)} className="miles_convert">{isMiles ? "km" : "mi"}</button>
             <button onClick={() => setFahrenheit(!fahrenheit)} className="temp_convert">{fahrenheit ? "F" : "C"}</button>
+            </div>
           </div>
           <h2 className="todays_date">{todaysDate}</h2>
           <h1 className="city_and_state">{weather.city.name}{weather.city.customState ? `, ${weather.city.customState}` : ""}</h1>
@@ -479,7 +483,7 @@ export default function Home() {
                   <div className="weather_icon--container">
                   <img className="weather_icon" src={`https://openweathermap.org/img/wn/${dailyForecast[date].conditions[0]}@2x.png`} alt={weather.list[0].weather[0].description} />
                   </div>
-                  <p className="temperature">{fahrenheit ? Math.round(Math.max(...dailyForecast[date].temps)) : Math.round((Math.max(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit} {fahrenheit ? Math.round(Math.min(...dailyForecast[date].temps)) : Math.round((Math.min(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit}</p>
+                  <p className="daily_temperature">{fahrenheit ? Math.round(Math.max(...dailyForecast[date].temps)) : Math.round((Math.max(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit} {fahrenheit ? Math.round(Math.min(...dailyForecast[date].temps)) : Math.round((Math.min(...dailyForecast[date].temps) - 32) * 5 / 9)}&deg;{unit}</p>
                 </div>
               );
             })}
@@ -493,7 +497,7 @@ export default function Home() {
             <p className="forecast_wind_speed">Wind Speed: {isMiles ? Math.round(wind * 1.60934) + " km/h" : dailyForecast[selectedDate].windSpeeds[0] + " mph"}</p>
             <p className="forecast_barometer">Barometer: {isPressure ? (dailyForecast[selectedDate].pressures[0] * 0.02953).toFixed(2) + ' inHg' : Math.round(dailyForecast[selectedDate].pressures[0]) + " hPa"}</p>
             <p className="forecast_humidity">Humidity: {Math.round(dailyForecast[selectedDate].humidities[0])}%</p>
-            <p className="forecast_humidity">Visibility: {isMiles ? (dailyForecast[selectedDate].visibility[0] * 1.60934).toFixed(1) + " km" : dailyForecast[selectedDate].visibility[0] + " mi"}</p>
+            <p className="forecast_visibility">Visibility: {isMiles ? (dailyForecast[selectedDate].visibility[0] * 1.60934).toFixed(1) + " km" : dailyForecast[selectedDate].visibility[0] + " mi"}</p>
             <p className="forecast_hi">Hi: {fahrenheit ? Math.round(Math.max(...dailyForecast[selectedDate].temps)) : Math.round((Math.max(...dailyForecast[selectedDate].temps) - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</p>
             <p className="forecast_lo">Lo: {fahrenheit ? Math.round(Math.min(...dailyForecast[selectedDate].temps)) : Math.round((Math.min(...dailyForecast[selectedDate].temps) - 32) * 5 / 9)}&deg; {fahrenheit ? "F" : "C"}</p>
 
@@ -506,7 +510,7 @@ export default function Home() {
                     <ul className="forecast__advice">
                       <h2 className="forecast_what_to_wear">What you will need:</h2>
                       {dayAdvice.items.map((item: string, index: number) => (
-                        <li className="items" key={index}>{item}</li>
+                        <li className="forecast_items" key={index}>{item}</li>
                       ))}
                     </ul>
                   </>
