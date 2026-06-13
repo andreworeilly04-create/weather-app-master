@@ -95,12 +95,9 @@ http://localhost:3000
 ```text
 src/
 ├── app/
-├── components/
-│   ├── WeatherCard.tsx
-│   ├── SearchBar.tsx
-│   └── OutfitRecommendation.tsx
-├── services/
-│   └── weatherApi.ts
+│   ├── favicon.ico
+│   ├── globals.css
+│   └── layout.tsx
 ├── types/
 ├── utils/
 └── styles/
