@@ -686,8 +686,6 @@
   }
 
   .weather_icon--container {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(4px);
     padding: 3px;
     border-radius: 50%;
     display: inline-block;
