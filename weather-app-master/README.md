@@ -1,36 +1,134 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Weather App 🌤️
+
+A modern weather application built with **Next.js** and **TypeScript** that provides real-time weather information and personalized clothing recommendations based on current weather conditions.
+
+## Features
+
+### 🌦️ Real-Time Weather Data
+
+* Fetches live weather information using the OpenWeather API.
+* Displays current temperature, weather conditions, humidity, wind speed, and more.
+* Supports location-based weather searches.
+
+### 👕 What to Wear Recommendations
+
+* Intelligent outfit suggestions based on current weather conditions.
+* Recommends appropriate clothing items for different temperatures and weather scenarios.
+* Helps users decide what to wear before heading outside.
+
+### ⚡ Modern Tech Stack
+
+* Built with Next.js for fast performance and server-side rendering.
+* Developed using TypeScript for improved type safety and maintainability.
+* Responsive design optimized for desktop and mobile devices.
+
+## Tech Stack
+
+* **Framework:** Next.js
+* **Language:** TypeScript
+* **Weather API:** OpenWeather API
+* **Styling:** CSS
+* **Package Manager:** npm / yarn
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+
+Before running the project, make sure you have:
+
+* Node.js installed
+* An OpenWeather API key
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone https://github.com/andreworeilly04-create/weather-app-master.git
+```
+
+2. Navigate to the project directory:
+
+```bash
+cd weather-app-master
+```
+
+3. Install dependencies:
+
+```bash
+npm install
+```
+
+4. Create a `.env.local` file in the root directory:
+
+```env
+NEXT_PUBLIC_WEATHER_API_KEY=a0f9e4f2471503620d34eef5966be77f
+```
+
+5. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+6. Open your browser and visit:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## How It Works
 
-## Learn More
+1. The user enters a city or location.
+2. The application requests weather data from the OpenWeather API.
+3. Weather information is displayed in an easy-to-read format.
+4. Based on the temperature and weather conditions, the app generates clothing and outfit recommendations.
+5. Users receive practical advice such as:
 
-To learn more about Next.js, take a look at the following resources:
+   * Wear a light t-shirt and shorts on hot days.
+   * Bring a jacket during cooler temperatures.
+   * Carry an umbrella when rain is expected.
+   * Layer clothing during cold weather.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```text
+src/
+├── app/
+├── components/
+│   ├── WeatherCard.tsx
+│   ├── SearchBar.tsx
+│   └── OutfitRecommendation.tsx
+├── services/
+│   └── weatherApi.ts
+├── types/
+├── utils/
+└── styles/
+```
 
-## Deploy on Vercel
+## Environment Variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+OPENWEATHER_API_KEY=your_api_key_here
+```
+
+## Future Improvements
+
+* 7-day weather forecasts
+* Geolocation support
+* Weather alerts and notifications
+* Saved favorite locations
+* Enhanced outfit recommendations based on activity level
+* Dark mode support
+
+## Acknowledgements
+
+* OpenWeather for providing weather data.
+* Next.js team for the excellent React framework.
+* TypeScript for type-safe development.
+
+## License
+
+This project is licensed under the MIT License.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
