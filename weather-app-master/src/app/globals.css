@@ -572,7 +572,7 @@
 
 @media(max-width:421px) {
   .search__location--container {
-    flex-direction: column-reverse;
+    flex-direction: column;
   }
 
   .search__btn{
@@ -674,6 +674,14 @@
 
   .forecast_items{
     font-size:19px;
+  }
+
+  .suggested_city_and_state{
+    font-size:12px;
+  }
+
+  .add__location{
+    font-size:11px;
   }
 
   .weather_icon--container {
