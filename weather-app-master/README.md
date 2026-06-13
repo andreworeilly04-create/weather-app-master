@@ -99,14 +99,15 @@ src/
 │   ├── globals.css
 │   └── layout.tsx
 ├── types/
+|  |-- weather.tsx
 ├── utils/
-└── styles/
-```
+|  |-- weatherAdvice.tsx
+
 
 ## Environment Variables
 
 ```env
-OPENWEATHER_API_KEY=your_api_key_here
+NEXT_PUBLIC_WEATHER_API_KEY=a0f9e4f2471503620d34eef5966be77f
 ```
 
 ## Future Improvements
