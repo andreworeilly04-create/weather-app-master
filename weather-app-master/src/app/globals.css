@@ -510,7 +510,7 @@
 }
 
 .weather_icon--container {
-  background: black;
+  background-color: black;
   backdrop-filter: blur(4px);
   padding: 10px;
   border-radius: 50%;
