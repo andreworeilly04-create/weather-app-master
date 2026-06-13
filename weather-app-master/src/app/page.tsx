@@ -494,7 +494,7 @@ export default function Home() {
           <div className="forecast-details">
             <h3 className="detailed_forecast">Detailed Forecast for {new Date(selectedDate).toLocaleDateString()}</h3>
             <p className="forecast_condition">Condition: {dailyForecast[selectedDate].descriptions[0]}</p>
-            <p className="forecast_wind_speed">Wind Speed: {isMiles ? Math.round(wind * 1.60934) + " km/h" : dailyForecast[selectedDate].windSpeeds[0] + " mph"}</p>
+            <p className="forecast_wind_speed">Wind Speed: {isSpeed ? Math.round(wind * 1.60934) + " km/h" : dailyForecast[selectedDate].windSpeeds[0] + " mph"}</p>
             <p className="forecast_barometer">Barometer: {isPressure ? (dailyForecast[selectedDate].pressures[0] * 0.02953).toFixed(2) + ' inHg' : Math.round(dailyForecast[selectedDate].pressures[0]) + " hPa"}</p>
             <p className="forecast_humidity">Humidity: {Math.round(dailyForecast[selectedDate].humidities[0])}%</p>
             <p className="forecast_visibility">Visibility: {isMiles ? (dailyForecast[selectedDate].visibility[0] * 1.60934).toFixed(1) + " km" : dailyForecast[selectedDate].visibility[0] + " mi"}</p>
