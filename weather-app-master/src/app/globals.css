@@ -571,7 +571,7 @@
 
 @media(max-width:421px) {
   .search__location--container {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
 
   .search__btn {
