@@ -444,7 +444,7 @@ export default function Home() {
           <div className="weather_icon--container">
           <img className="weather_icon" src={`https://openweathermap.org/img/wn/${getIconUrl(weather.list[0].weather[0].icon)}@2x.png`} alt={weather.list[0].weather[0].description} />
           </div>
-          <p className="condition">{weather.list[0].weather[0].description.toUpperCase()}</p>
+          <p className="condition">{weather.list[0].weather[0].description.charAt().toUpperCase()}</p>
           <p className="updated">Updated as of {formattedTime}</p>
         </div>
 
