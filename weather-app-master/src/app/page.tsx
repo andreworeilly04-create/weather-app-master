@@ -72,7 +72,7 @@ export default function Home() {
 
   useEffect(() => {
     if (!weather?.list || weather.list.length === 0 || !weather.list[0].weather || weather.list[0].weather.length === 0) return;
-    const condition = weather.list[0].weather[0].main.toLowerCase();
+    const condition = weather.list[0].weather[0].main;
     setWeatherCondition(condition)
   }, [weather])
 
