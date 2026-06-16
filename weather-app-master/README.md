@@ -97,7 +97,7 @@ src/
 ├── app/
 │   ├── favicon.ico
 │   ├── globals.css
-│   └── layout.tsx
+│   └── page.tsx
 ├── types/
 |  |-- weather.tsx
 ├── utils/
